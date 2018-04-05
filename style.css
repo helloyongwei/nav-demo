@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+main {
+    text-align: center;
+}
+
+#main {
+    display: inline-block;
+}
+
+kbd {
+    border: 1px solid red;
+    width: 4em;
+    height: 4em;
+    display: inline-block;
+    text-transform: uppercase;
+    position: relative;
+}
+
+
+kbd > .edit {
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    display: none;
+}
+
+
+kbd:hover > .edit {
+    display: inline-block;
+}
+
+kbd > .del {
+    position: absolute;
+    left: 2px;
+    bottom: 1px;
+    display: none;
+}
+
+
+kbd:hover > .del {
+    display: inline-block;
+}
