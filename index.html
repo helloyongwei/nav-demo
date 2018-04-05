@@ -50,13 +50,15 @@
             var index = 0
             while (index < keys['length']) {
                 var div = document.createElement('div')     //创建div元素
+                div.className = 'row'
                 main.appendChild(div)   //将div元素加入mian元素中
 
                 var index2 = 0
                 while (index2 < keys[index]['length']) {    //每行添加按键
                     var kbd = document.createElement('kbd') //创建按键元素
                     kbd.textContent = keys[index][index2]   //设置按键内容
-                    
+                    kbd.className = 'key'
+
                     var edit = document.createElement('button')   //创建编辑按钮
                     edit.textContent = "E" 
                     edit.className = "edit"
