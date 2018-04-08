@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>nav-demo</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header></header>
+    <main>
+        <div id="main" class="wrapper">
+
+        </div>
+    </main>
+    <footer></footer>
+
+    <script>
+
+        var keys = {
+				'0': {0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p','length':10},
+				'1': {0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l','length':9},
+				'2': {0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m','length':7},
+				'length': 3
+			}
+
+			var hash = {
+                'q': 'qq.com', 
+                'w': 'weibo.com', 
+                'e': 'ele.me', 
+                'r': 'renren.com', 
+                't': 'tianya.com', 
+                'y': 'youtube.com', 
+                'u': 'uc.com' , 
+                'i': 'iqiyi.com', 
+                'o': 'opera.com', 
+                'p': undefined, 
+                'a': 'acfun.tv', 
+                's': 'sohu.com', 
+                'z': 'zhihu.com', 
+                'm': 'www.mcdonalds.com.cn'
+			}
+
+            var hashInLocalStroage = JSON.parse(localStorage.getItem('hashLocal') || 'null')
+            if (hashInLocalStroage) {
+                hash = hashInLocalStroage;
+            }
+
+            var index = 0
+            while (index < keys['length']) {
+                var div = document.createElement('div')     //创建div元素
+                div.className = 'row'
+                main.appendChild(div)   //将div元素加入mian元素中
+
+                var index2 = 0
+                while (index2 < keys[index]['length']) {    //每行添加按键
+                    var span = document.createElement('span')
+                    span.textContent = keys[index][index2]
+                    span.className = "text"
+
+                    var edit = document.createElement('button')   //创建编辑按钮
+                    edit.textContent = "E" 
+                    edit.className = "edit"
+                    edit.id = keys[index][index2]
+                    edit.onclick = function(event) {      //给按钮添加事件
+                        var btn = event['target']
+                        var img2 = btn.previousSibling
+                        console.log(img2)
+                        var key = event['target']['id']     //获取kbd的id
+                        var x = prompt('请输入网址:')
+                        hash[key] = x       //更改kbd链接
+                        img2.src = "http://" + x + "/favicon.ico"
+                        img2.onerror = function (event) {
+                            console.log(event['target'] + "无法获取图片")
+                        }
+                        localStorage.setItem('hashLocal', JSON.stringify(hash))
+                    }
+
+                    if (hash[keys[index][index2]]) {
+                        var img = document.createElement('img')
+                        img.src = 'http://' + hash[keys[index][index2]] + '/favicon.ico'
+                    }
+                    img.onerror = function (event) {
+                        console.log(event['target'] + "无法获取图片")
+                        // console.log(event.target)
+                    }
+                    
+                    var kbd = document.createElement('kbd') //创建按键元素
+                    // kbd.textContent = keys[index][index2]   //设置按键内容
+                    kbd.className = 'key'
+
+                    kbd.appendChild(span)
+                    if (hash[keys[index][index2]]) {
+                        kbd.appendChild(img)
+                    }
+                    kbd.appendChild(edit) //edit成为kbd子元素
+                    
+                    div.appendChild(kbd)    //kbd成为div子元素
+                    index2++
+                }
+                index++
+            }
+
+            //添加键盘事件
+            document.onkeypress = function(event) { 
+                var key = event['key']   //'key'必须加单引号
+                window.open('http://' + hash[key], '_blank')
+            }
+    </script>
+</body>
+</html>

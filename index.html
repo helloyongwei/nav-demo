@@ -17,8 +17,16 @@
     <footer></footer>
 
     <script>
+        var hashh = init()
+        var keys = hashh['keys']
+        var hash = hashh['hash']
 
-        var keys = {
+        getKeyboards(keys, hash)
+
+        listen(hash)
+
+        function init() {
+            var keys = {
 				'0': {0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p','length':10},
 				'1': {0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l','length':9},
 				'2': {0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m','length':7},
@@ -47,53 +55,95 @@
                 hash = hashInLocalStroage;
             }
 
-            var index = 0
-            while (index < keys['length']) {
-                var div = document.createElement('div')     //创建div元素
+            return {
+                "keys": keys,
+                "hash": hash
+            }
+        }
+ 
+        function tag(name) {
+            var tagN = document.createElement(name)
+            return tagN
+        }
+        
+        function getEditBtn(id, hash) {
+            var edit = tag('button')   //创建编辑按钮
+            edit.textContent = "E" 
+            edit.className = "edit"
+            edit.id = id
+            edit.onclick = function(event) {      //给按钮添加事件
+                var btn = event['target']
+                var img2 = btn.previousSibling
+                console.log(img2)
+                var key = event['target']['id']     //获取kbd的id
+                var x = prompt('请输入网址:')
+                hash[key] = x       //更改kbd链接
+                img2.src = "http://" + x + "/favicon.ico"
+                img2.onerror = function (event) {
+                    console.log(event['target'] + "无法获取图片")
+                }
+                localStorage.setItem('hashLocal', JSON.stringify(hash))
+            }
+            return edit
+        }
+
+        function createSpan(text) {
+            var span = tag('span')
+            span.textContent = text
+            span.className = "text"
+            return span
+        }
+        
+        function createImg(hashValue) {
+            var img = tag('img')
+            if (hashValue) {
+                img.src = 'http://' + hashValue + '/favicon.ico'
+            }
+            img.onerror = function (event) {
+                console.log(event['target'] + "无法获取图片")
+                // console.log(event.target)
+            }
+            return img
+        }
+
+
+        function getKeyboards(keys, hash) {
+            for (var index = 0; index < keys['length']; index++) {
+                var div = tag('div')     //创建div元素
                 div.className = 'row'
                 main.appendChild(div)   //将div元素加入mian元素中
+                
+                for (var index2 = 0; index2 < keys[index]['length']; index2++) {
+                    //每行添加按键
+                    var span = createSpan(keys[index][index2])
 
-                var index2 = 0
-                while (index2 < keys[index]['length']) {    //每行添加按键
-                    var kbd = document.createElement('kbd') //创建按键元素
-                    kbd.textContent = keys[index][index2]   //设置按键内容
+                    var edit = getEditBtn(keys[index][index2], hash)
+
+                    var img = createImg(hash[keys[index][index2]])
+                    
+                    var kbd = tag('kbd') //创建按键元素
+                    // kbd.textContent = keys[index][index2]   //设置按键内容
                     kbd.className = 'key'
 
-                    var edit = document.createElement('button')   //创建编辑按钮
-                    edit.textContent = "E" 
-                    edit.className = "edit"
-                    edit.id = keys[index][index2]
-                    edit.onclick = function(event) {      //给按钮添加事件
-                        var key = event['target']['id']     //获取kbd的id
-                        var x = prompt('请输入网址:')
-                        hash[key] = x       //更改kbd链接
-                        localStorage.setItem('hashLocal', JSON.stringify(hash))
+                    kbd.appendChild(span)
+                    if (hash[keys[index][index2]]) {
+                        kbd.appendChild(img)
                     }
-
-                    var del = document.createElement('button')
-                    del.textContent = 'D'
-                    del.className = "del"
-                    del.id = keys[index][index2]
-                    del.onclick = function (event) {
-                        var key = event['target']['id']
-                        hash[key] = undefined
-                        localStorage.setItem('hashLocal', JSON.stringify(hash))
-
-                    }
-
                     kbd.appendChild(edit) //edit成为kbd子元素
-                    kbd.appendChild(del)
+                    
                     div.appendChild(kbd)    //kbd成为div子元素
-                    index2++
                 }
-                index++
             }
+        }
 
-            //添加键盘事件
+        //添加键盘事件
+        function listen(hash) {
             document.onkeypress = function(event) { 
                 var key = event['key']   //'key'必须加单引号
                 window.open('http://' + hash[key], '_blank')
             }
+        }
+            
     </script>
 </body>
 </html>
